@@ -1,0 +1,90 @@
+version: '3.8'
+services:
+  db:
+    image: mysql
+    container_name: lumen_mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_lumen
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin123
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      lumen-network:
+        ipv4_address: 171.0.0.10
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: lumen_phpmyadmin
+    restart: always
+    ports:
+      - 8000:80
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: db
+      PMA_USER: admin
+      PMA_PASSWORD: admin123
+      MYSQL_ROOT_PASSWORD: root
+    links:
+      - db
+    depends_on:
+      - db
+    networks:
+      lumen-network:
+        ipv4_address: 171.0.0.15
+
+  php:
+    image: lumen_docker
+    container_name: lumen_php
+    build:
+      context: .
+      dockerfile: ./.docker/php/Dockerfile
+    restart: always
+    ports:
+      - 80:8000
+    volumes:
+      - ./src/lumen:/var/www/html
+    links:
+      - db
+    depends_on:
+      - db
+    networks:
+      lumen-network:
+        ipv4_address: 171.0.0.20
+
+  node:
+    image: lumen_vue_docker
+    container_name: lumen_node_vue
+    build:
+      context: ./src/node
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - ./src/node:/usr/app
+      - ./src/node/node_modules:/usr/app/node_modules
+    links:
+      - db
+    depends_on:
+      - db
+    working_dir: /usr/app
+    command: ['npm', 'run', 'serve']
+    networks:
+      lumen-network:
+        ipv4_address: 171.0.0.21
+
+networks:
+  lumen-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 171.0.0.0/24
+          gateway: 171.0.0.1
+
+volumes:
+  db:

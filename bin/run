@@ -1,0 +1,17 @@
+#!/bin/bash
+ARG=$1
+if [ -z $ARG ]; then
+    docker exec -it -d lumen_php php -S 171.0.0.20:8000 -t public
+    echo "Contêiner lumen inicializado: http://localhost/"
+    docker exec -it -d lumen_node_vue npm run serve
+    echo "Contêiner node inicializado: http://localhost:8080/"
+    exit
+fi
+
+if [ $ARG = "lumen" ]; then
+    docker exec -it lumen_php php -S 171.0.0.20:8000 -t public
+elif [ $ARG = "vue" ]; then
+    docker exec -it lumen_node_vue npm run serve
+else
+    echo "Nenhum nome do contêiner válido encontrado para \"$ARG\"."
+fi

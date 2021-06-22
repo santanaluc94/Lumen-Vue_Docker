@@ -1,0 +1,21 @@
+#!/bin/bash
+sudo chmod 777 -Rf src/*
+cd ./src/
+sudo npm install -g @vue/cli
+vue create node
+cd ..
+
+# Build project
+sudo cp ./.docker/node/Dockerfile ./src/node
+sudo mkdir ./src/lumen
+docker-compose up --build -d
+sudo chmod 777 src
+sudo chmod 777 -Rf src/*
+sudo rm ./src/node/Dockerfile
+
+# Install Lumen
+docker exec -it lumen_php composer create-project --prefer-dist laravel/lumen . \
+    && composer install
+sudo cp .env ./src/lumen
+
+sudo chmod 777 -Rf src/*

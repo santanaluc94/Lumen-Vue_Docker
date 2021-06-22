@@ -1,0 +1,8 @@
+#!/bin/bash
+docker start lumen_mysql
+docker start lumen_phpmyadmin
+docker start lumen_php
+docker start lumen_node_vue
+sudo chmod 777 src/
+sudo chmod 777 -Rf src/*
+docker exec -it lumen_php php -S 171.0.0.20:8000 -t lumen/public

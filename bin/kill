@@ -1,0 +1,12 @@
+#!/bin/bash
+CURRENT_DIRECTOR=${PWD##*/}
+CURRENT_DIRECTOR="${CURRENT_DIRECTOR,,}"
+CURRENT_DIRECTOR="${CURRENT_DIRECTOR// /_}"
+docker rm -f lumen_mysql
+docker rm -f lumen_phpmyadmin
+docker rm -f lumen_php
+docker rm -f lumen_node_vue
+docker rmi lumen_docker
+docker volume rm "$CURRENT_DIRECTOR"_db
+docker network rm "$CURRENT_DIRECTOR"_lumen-network
+sudo rm -Rf ./src/*
