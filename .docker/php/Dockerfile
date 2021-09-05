@@ -10,6 +10,7 @@ RUN /etc/init.d/apache2 start
 # Install Git
 RUN apt-get update && \
     apt-get upgrade -y && \
+    apt-get install -y unzip && \
     apt-get install -y git
 
 # Install Composer
