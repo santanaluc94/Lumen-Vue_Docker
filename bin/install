@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo mkdir src
 sudo chmod 777 -Rf src/*
 cd ./src/
 sudo npm install -g @vue/cli
